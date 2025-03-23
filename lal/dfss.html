@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Открытка</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f8ff;
+      padding: 20px;
+      
+
+    }
+    .card {
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    
+    }
+    .button {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      color:#fff;
+      background-color: #007bff;
+      text-decoration: none;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+    #no {
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Ты хочешь быть моей женой?</h1>
+    <img src="cart.jpg" alt="Картинка" style="width:100%; border-radius: 10px;">
+    <button class="button" id="yes">Да</button>
+    <button class="button" id="no">Нет</button>
+  </div>
+
+  <script>
+    const noButton = document.getElementById("no");
+    noButton.addEventListener("mouseover", () => {
+      const randomX = Math.random() * (window.innerWidth - noButton.offsetWidth);
+      const randomY = Math.random() * (window.innerHeight - noButton.offsetHeight);
+      noButton.style.left = randomX + "px";
+      noButton.style.top = randomY + "px";
+    });
+  </script>
+</body>
+</html>
