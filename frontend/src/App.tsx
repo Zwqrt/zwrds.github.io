@@ -78,7 +78,9 @@ export function App() {
 
   return (
     <>
-      <div className="bg" aria-hidden />
+      <div className="bg" aria-hidden>
+        <div className="bg-night" />
+      </div>
       <div className="app">
         <main className={`screen${ready ? '' : ' no-nav'}`} ref={scroller}>
           {content}

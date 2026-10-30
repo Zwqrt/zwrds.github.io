@@ -21,7 +21,7 @@ frontend/   React + TypeScript + Vite, чистый CSS, lucide-react
                             supabaseProvider.ts, serverProvider.ts, demoProvider.ts
   src/state/store.tsx       состояние, офлайн-очередь (IndexedDB)
   src/screens/              Главная, Предмет, Расчёт, Фото, Профиль
-  public/bg-day.jpg         фон (фото корпуса)
+  public/bg-day.jpg, bg-night.jpg   фон днём и ночью
 supabase/
   migrations/               таблицы, RLS, приватный bucket, политики Storage, usage_stats()
   functions/verify-telegram Edge Function: проверка initData → сессия Supabase
@@ -34,9 +34,11 @@ tools/      backup.py (экспорт/импорт backup.zip в обоих ре
 Компоненты не знают, какой бэкенд используется: бэкенд выбирает переменная `VITE_BACKEND`
 (`supabase` | `server` | `demo`) в `frontend/src/data/index.ts`.
 
-> **Фон.** В репозитории лежит временная заглушка `frontend/public/bg-day.jpg`.
-> Замените её своим фото корпуса с тем же именем (лучше вертикальное, ~1080×1920, JPEG до 400 КБ).
-> Ночная тема использует то же фото с затемнением, отдельный файл не нужен.
+> **Фон.** `frontend/public/bg-day.jpg` — корпус днём (увеличен ×2, очищен от артефактов сжатия),
+> `bg-night.jpg` — та же картинка ночью (небо со звёздами и луной, горящие окна, фонари, неон).
+> Обе получены скриптами из `tools/background/`:
+> `python tools/background/day.py исходник.webp day.png && python tools/background/night.py day.png night.png`
+> (нужны `opencv-python-headless` и `numpy`). Ночное фото грузится только в ночной теме.
 
 ---
 
