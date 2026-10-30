@@ -5,7 +5,7 @@ import { checkThemeContrast } from './contrast';
 import { setTelegramColors } from './telegram';
 import { THEME_BG, resolveTheme, type Theme } from './theme';
 
-const BG_URL = '/bg-day.jpg';
+const BG_URL: Record<Theme, string> = { day: '/bg-day.jpg', night: '/bg-night.jpg' };
 
 /** Тема (авто по Алматы), анализ фона и dev-проверка контраста. */
 export function useTheme(mode: ThemeMode): Theme {
@@ -19,13 +19,19 @@ export function useTheme(mode: ThemeMode): Theme {
     return () => window.clearInterval(t);
   }, [mode]);
 
+  // Анализируем то фото, которое сейчас на фоне.
   useEffect(() => {
+    let alive = true;
+    setStats(null);
     const img = new Image();
     img.decoding = 'async';
-    img.onload = () => setStats(analyzeImage(img));
-    img.onerror = () => setStats(null);
-    img.src = BG_URL;
-  }, []);
+    img.onload = () => alive && setStats(analyzeImage(img));
+    img.onerror = () => alive && setStats(null);
+    img.src = BG_URL[theme];
+    return () => {
+      alive = false;
+    };
+  }, [theme]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;

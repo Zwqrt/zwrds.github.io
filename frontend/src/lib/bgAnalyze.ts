@@ -69,7 +69,7 @@ export function applyBgStats(stats: BgStats | null, theme: 'day' | 'night'): voi
     for (const z of ['top', 'mid', 'bottom']) set(`--glass-a-${z}`, theme === 'day' ? 0.8 : 0.74);
     set('--scrim-top', theme === 'day' ? 0.55 : 0);
     set('--scrim-bottom', theme === 'day' ? 0.55 : 0);
-    set('--scrim-night', 0.66);
+    set('--scrim-night', 0.3);
     finish();
     return;
   }
@@ -82,13 +82,14 @@ export function applyBgStats(stats: BgStats | null, theme: 'day' | 'night'): voi
     set('--scrim-top', clamp(0.45 + (0.5 - stats.top.lum) * 0.6 + stats.top.busy, 0.45, 0.85));
     set('--scrim-bottom', clamp(0.45 + (0.5 - stats.bottom.lum) * 0.6 + stats.bottom.busy, 0.45, 0.85));
   } else {
-    // Светлый текст на тёмном стекле: светлое фото — сильнее затемняем.
+    // Светлый текст на тёмном стекле. Ночное фото уже тёмное, но светлые участки
+    // (окна, фонари, луна) — затемняем сильнее.
     const alpha = (z: Zone) => clamp(0.66 + z.lum * 0.3 + z.busy * 0.5, 0.66, 0.88);
     set('--glass-a-top', alpha(stats.top));
     set('--glass-a-mid', alpha(stats.mid));
     set('--glass-a-bottom', alpha(stats.bottom));
     const avg = (stats.top.lum + stats.mid.lum + stats.bottom.lum) / 3;
-    set('--scrim-night', clamp(0.66 + avg * 0.25, 0.66, 0.85));
+    set('--scrim-night', clamp(0.2 + avg * 1.5, 0.2, 0.6));
     set('--scrim-top', clamp(stats.top.lum * 0.6, 0, 0.4));
     set('--scrim-bottom', clamp(stats.bottom.lum * 0.6, 0, 0.4));
   }
