@@ -4,8 +4,11 @@ import { analyzeImage, applyBgStats, type BgStats } from './bgAnalyze';
 import { checkThemeContrast } from './contrast';
 import { setTelegramColors } from './telegram';
 import { THEME_BG, resolveTheme, type Theme } from './theme';
+import bgDay from '../assets/bg-day.jpg';
+import bgNight from '../assets/bg-night.jpg';
 
-const BG_URL: Record<Theme, string> = { day: '/bg-day.jpg', night: '/bg-night.jpg' };
+// Через импорт: Vite добавляет хэш в имя файла, и новый фон не застревает в кэше Telegram.
+const BG_URL: Record<Theme, string> = { day: bgDay, night: bgNight };
 
 /** Тема (авто по Алматы), анализ фона и dev-проверка контраста. */
 export function useTheme(mode: ThemeMode): Theme {

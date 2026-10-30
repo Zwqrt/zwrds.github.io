@@ -52,7 +52,21 @@ export const useStore = (): Store => {
   return s;
 };
 
+/** Не даём загрузке висеть бесконечно: по таймауту показываем ошибку с кнопкой «Повторить». */
+function withTimeout<T>(p: Promise<T>, ms: number, message: string): Promise<T> {
+  let t: number | undefined;
+  return Promise.race([
+    p.finally(() => window.clearTimeout(t)),
+    new Promise<T>((_, reject) => {
+      t = window.setTimeout(() => reject(new TimeoutError(message)), ms);
+    }),
+  ]);
+}
+
+class TimeoutError extends Error {}
+
 function toAppError(e: unknown): AppError {
+  if (e instanceof TimeoutError) return { code: 'unknown', message: e.message };
   if (e instanceof AuthError) return { code: e.code, message: e.message };
   if (isNetworkError(e)) return { code: 'network', message: 'Нет соединения с сервером' };
   return { code: 'unknown', message: e instanceof Error ? e.message : String(e) };
@@ -162,8 +176,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     try {
       const init = initData();
       if (!init && p.name !== 'demo') throw new AuthError('Откройте приложение через Telegram-бота', 'no-telegram');
-      await p.auth(init);
-      await fetchAll();
+      await withTimeout(p.auth(init), 25_000, 'Сервер входа не ответил за 25 секунд');
+      await withTimeout(fetchAll(), 25_000, 'Сервер не отдал данные за 25 секунд');
       setError(null);
       setStatus('ready');
       void sync();
