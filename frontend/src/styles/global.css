@@ -135,7 +135,7 @@ button {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background: var(--bg-fallback) url('/bg-day.jpg') 50% 50% / cover no-repeat;
+  background: var(--bg-fallback) url('../assets/bg-day.jpg') 50% 50% / cover no-repeat;
 }
 .bg-night {
   position: absolute;
@@ -147,7 +147,7 @@ button {
 }
 :root[data-theme='night'] .bg-night {
   /* картинка грузится только когда нужна ночная тема */
-  background-image: url('/bg-night.jpg');
+  background-image: url('../assets/bg-night.jpg');
   opacity: 1;
 }
 .bg::before {

@@ -23,7 +23,14 @@ export class SupabaseProvider implements DataProvider {
   constructor(url: string, anonKey: string) {
     if (!url || !anonKey) throw new AuthError('Не заданы VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY', 'config');
     this.sb = createClient(url, anonKey, {
-      auth: { persistSession: true, autoRefreshToken: true, storageKey: 'kartu-auth' },
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        storageKey: 'kartu-auth',
+        // Во встроенном браузере Telegram блокировка navigator.locks иногда зависает навсегда,
+        // и вместе с ней — любой запрос. Приложение однооконное, блокировка не нужна.
+        lock: async (_name, _timeout, fn) => fn(),
+      },
     });
   }
 
