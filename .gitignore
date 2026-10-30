@@ -1,0 +1,25 @@
+node_modules/
+dist/
+.env
+.env.local
+*.local
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# данные и бэкапы режима VPS
+/data/
+/server/data/
+/deploy/data/
+/deploy/backups/
+/deploy/caddy_data/
+/deploy/caddy_config/
+backup*.zip
+seed-backup.zip
+
+# Supabase CLI
+supabase/.temp/
+supabase/.branches/
+*.tsbuildinfo

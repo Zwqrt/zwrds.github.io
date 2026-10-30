@@ -1,0 +1,59 @@
+# Режим VPS:  cd deploy && cp .env.example .env && (заполнить) && docker compose up -d --build
+# Все данные — в ./data (kartu.db + photos/), бэкапы — в ./backups.
+
+services:
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    env_file: .env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy_data:/data
+      - ./caddy_config:/config
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ..
+      dockerfile: deploy/server.Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  bot:
+    build:
+      context: ..
+      dockerfile: deploy/bot.Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      WEBAPP_URL: https://${DOMAIN}
+
+  backup:
+    image: alpine:3.20
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - ./data:/data:ro
+      - ./backups:/backups
+      - ./backup.sh:/usr/local/bin/backup.sh:ro
+    # Каждый день в 03:30 по времени Алматы
+    environment:
+      TZ: Asia/Almaty
+    command: >
+      sh -c "apk add --no-cache sqlite tzdata >/dev/null &&
+             echo '30 3 * * * /usr/local/bin/backup.sh >> /backups/backup.log 2>&1' > /etc/crontabs/root &&
+             crond -f -l 8"

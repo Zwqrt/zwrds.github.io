@@ -1,0 +1,6 @@
+# Минимальная конфигурация Supabase CLI для этого проекта.
+project_id = "kartu-grades"
+
+[functions.verify-telegram]
+# Функцию вызывают без JWT (его ещё нет) — она сама проверяет подпись Telegram.
+verify_jwt = false
